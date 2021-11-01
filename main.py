@@ -10,6 +10,7 @@ import base64
 import easyocr
 import io
 import numpy
+import requests
 from PIL import Image
 from PIL import ImageEnhance
 
