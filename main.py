@@ -273,7 +273,7 @@ def get_account():
 
     if uid != None and psw != None:
         print("从环境变量中获取了用户名和密码！")
-        return uid, psw, PUSH_KEY
+        return uid, psw
     print("\n\n请仔细阅读以下日志！！\n请仔细阅读以下日志！！！！\n请仔细阅读以下日志！！！！！！\n\n")
     if os_path.exists("account.txt"):
         print("读取账号中……")
