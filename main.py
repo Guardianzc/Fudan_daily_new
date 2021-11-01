@@ -182,10 +182,11 @@ class Zlapp(Fudan):
         if last_info["d"]["info"]["date"] == today:
             print("\n*******今日已提交*******")
             notify(f"今日已打卡：{position['formattedAddress']}", f"今日已打卡：{position['formattedAddress']}")
-            self.close()
+            return True
         else:
             print("\n\n*******未提交*******")
             self.last_info = last_info["d"]["oldInfo"]
+            return False
             
     def read_captcha(self, img_byte):
         img = Image.open(io.BytesIO(img_byte)).convert('L')
@@ -259,7 +260,7 @@ class Zlapp(Fudan):
                 time.sleep(0.1)
                 if(json_loads(save.text)["e"] != 1):
                     break
-                notify(f"今日已打卡：{" ".join((province, city, district))}", f"今日已打卡：{" ".join((province, city, district))}")
+                notify(f"今日已打卡：{' '.join((province, city, district))}", f"今日已打卡：{' '.join((province, city, district))}")
             except:
                 notify("打卡失败，请手动打卡", "打卡失败，请手动打卡")
 
@@ -307,8 +308,8 @@ if __name__ == '__main__':
                         url_login=zlapp_login, url_code=code_url)
     daily_fudan.login()
 
-    daily_fudan.check()
-    daily_fudan.checkin()
+    flag = daily_fudan.check()
+    if flag == Flase:
+        daily_fudan.checkin()
     # 再检查一遍
-    daily_fudan.check()
     daily_fudan.close(1)
