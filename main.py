@@ -15,7 +15,27 @@ from PIL import ImageEnhance
 
 from requests import session, post, adapters
 adapters.DEFAULT_RETRIES = 5
+try:
+    PUSH_KEY = getenv('PUSH_KEY')
+    
+def notify(_title, _message=None):
+    if not PUSH_KEY:
+        print("未配置PUSH_KEY！")
+        return
 
+    if not _message:
+        _message = _title
+
+    print(_title)
+    print(_message)
+
+    _response = requests.post(f"https://sc.ftqq.com/{PUSH_KEY}.send", {"text": _title, "desp": _message})
+
+    if _response.status_code == 200:
+        print(f"发送通知状态：{_response.content.decode('utf-8')}")
+    else:
+        print(f"发送通知失败：{_response.status_code}")
+        
 class Fudan:
     """
     建立与复旦服务器的会话，执行登录/登出操作
@@ -41,6 +61,7 @@ class Fudan:
 
         self.uid = uid
         self.psw = psw
+        self.PUSH_KEY = PUSH_KEY
 
     def _page_init(self):
         """
@@ -159,6 +180,7 @@ class Zlapp(Fudan):
         print("◉今日日期为:", today)
         if last_info["d"]["info"]["date"] == today:
             print("\n*******今日已提交*******")
+            notify(f"今日已打卡：{position['formattedAddress']}", f"今日已打卡：{position['formattedAddress']}")
             self.close()
         else:
             print("\n\n*******未提交*******")
@@ -224,17 +246,21 @@ class Zlapp(Fudan):
                 }
             )
             # print(self.last_info)
-            save = self.session.post(
-                'https://zlapp.fudan.edu.cn/ncov/wap/fudan/save',
-                data=self.last_info,
-                headers=headers,
-                allow_redirects=False)
+            try:
+                save = self.session.post(
+                    'https://zlapp.fudan.edu.cn/ncov/wap/fudan/save',
+                    data=self.last_info,
+                    headers=headers,
+                    allow_redirects=False)
 
-            save_msg = json_loads(save.text)["m"]
-            print(save_msg, '\n\n')
-            time.sleep(0.1)
-            if(json_loads(save.text)["e"] != 1):
-                break
+                save_msg = json_loads(save.text)["m"]
+                print(save_msg, '\n\n')
+                time.sleep(0.1)
+                if(json_loads(save.text)["e"] != 1):
+                    break
+                notify(f"今日已打卡：{" ".join((province, city, district))}", f"今日已打卡：{" ".join((province, city, district))}")
+            except:
+                notify("打卡失败，请手动打卡", "打卡失败，请手动打卡")
 
 def get_account():
     """
@@ -242,9 +268,10 @@ def get_account():
     """
     uid = getenv("STD_ID")
     psw = getenv("PASSWORD")
+
     if uid != None and psw != None:
         print("从环境变量中获取了用户名和密码！")
-        return uid, psw
+        return uid, psw, PUSH_KEY
     print("\n\n请仔细阅读以下日志！！\n请仔细阅读以下日志！！！！\n请仔细阅读以下日志！！！！！！\n\n")
     if os_path.exists("account.txt"):
         print("读取账号中……")
