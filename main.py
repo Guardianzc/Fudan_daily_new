@@ -17,7 +17,8 @@ from requests import session, post, adapters
 adapters.DEFAULT_RETRIES = 5
 try:
     PUSH_KEY = getenv('PUSH_KEY')
-    
+except:
+    print("未配置PUSH_KEY！")
 def notify(_title, _message=None):
     if not PUSH_KEY:
         print("未配置PUSH_KEY！")
