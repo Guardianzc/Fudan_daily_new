@@ -309,7 +309,7 @@ if __name__ == '__main__':
     daily_fudan.login()
 
     flag = daily_fudan.check()
-    if flag == Flase:
+    if flag == False:
         daily_fudan.checkin()
     # 再检查一遍
     daily_fudan.close(1)
