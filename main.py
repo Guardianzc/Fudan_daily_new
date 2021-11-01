@@ -183,6 +183,7 @@ class Zlapp(Fudan):
         if last_info["d"]["info"]["date"] == today:
             print("\n*******今日已提交*******")
             notify(f"今日已打卡：{position['formattedAddress']}", f"今日已打卡：{position['formattedAddress']}")
+            self.close()
             return True
         else:
             print("\n\n*******未提交*******")
@@ -313,4 +314,4 @@ if __name__ == '__main__':
     if flag == False:
         daily_fudan.checkin()
     # 再检查一遍
-    daily_fudan.close(1)
+    daily_fudan.close()
