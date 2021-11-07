@@ -256,13 +256,15 @@ class Zlapp(Fudan):
                 data=self.last_info,
                 headers=headers,
                 allow_redirects=False)
-
-            save_msg = json_loads(save.text)["m"]
-            print(save_msg, '\n\n')
+            try:
+                save_msg = json_loads(save.text)["m"]
+                print(save_msg, '\n\n')
+                notify(f"今日已打卡：{' '.join((province, city, district))}", f"今日已打卡：{' '.join((province, city, district))}")
+            except:
+                notify("打卡失败，请手动提交")
             time.sleep(0.1)
             if(json_loads(save.text)["e"] != 1):
                 break
-            notify(f"今日已打卡：{' '.join((province, city, district))}", f"今日已打卡：{' '.join((province, city, district))}")
 
 
 def get_account():
