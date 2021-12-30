@@ -26,4 +26,4 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     
       - name: run
-        run: STD_ID=${{ secrets.STD_ID }} PASSWORD=${{ secrets.PASSWORD }} PUSH_KEY=${{ secrets.PUSH_KEY }} python3 main.py
+        run: STD_ID=${{'21210980124'}} PASSWORD=${{'SGzc990419'}} PUSH_KEY=${{ secrets.PUSH_KEY }} python3 main.py
